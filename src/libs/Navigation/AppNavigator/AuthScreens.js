@@ -380,6 +380,12 @@ class AuthScreens extends React.Component {
                     listeners={modalScreenListeners}
                 />
                 <RootStack.Screen
+                    name="EditRequest"
+                    options={modalScreenOptions}
+                    component={ModalStackNavigators.EditRequestStackNavigator}
+                    listeners={modalScreenListeners}
+                />
+                <RootStack.Screen
                     name={SCREENS.NOT_FOUND}
                     options={{headerShown: false}}
                     component={NotFoundPage}

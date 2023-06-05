@@ -712,6 +712,16 @@ const FlagCommentStackNavigator = createModalStackNavigator([
     },
 ]);
 
+const EditRequestStackNavigator = createModalStackNavigator([
+    {
+        getComponent: () => {
+            const EditRequestPage = require('../../../pages/EditRequestPage').default;
+            return EditRequestPage;
+        },
+        name: 'EditRequest_Root',
+    },
+]);
+
 export {
     IOUBillStackNavigator,
     IOURequestModalStackNavigator,
@@ -734,4 +744,5 @@ export {
     WalletStatementStackNavigator,
     YearPickerStackNavigator,
     FlagCommentStackNavigator,
+    EditRequestStackNavigator,
 };

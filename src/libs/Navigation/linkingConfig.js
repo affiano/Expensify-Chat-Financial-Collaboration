@@ -332,6 +332,11 @@ export default {
                     FlagComment_Root: ROUTES.FLAG_COMMENT,
                 },
             },
+            EditRequest: {
+                screens: {
+                    EditRequest_Root: ROUTES.EDIT_REQUEST,
+                },
+            },
             [SCREENS.NOT_FOUND]: '*',
         },
     },

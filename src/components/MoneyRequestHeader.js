@@ -190,7 +190,7 @@ const MoneyRequestHeader = (props) => {
                         titleStyle={styles.newKansasLarge}
                         shouldShowRightIcon
                         iconRight={Expensicons.ArrowRight}
-                        onPress={() => {console.log('pizza')}}
+                        onPress={() => Navigation.navigate(ROUTES.getEditRequestRoute(123, 'pizza'))}
                     />
                     <MenuItemWithTopDescription
                         description={props.translate('common.description')}
