@@ -188,14 +188,21 @@ const MoneyRequestHeader = (props) => {
                         titleIcon={Expensicons.Checkmark}
                         description={`${props.translate('iou.amount')} • ${props.translate('iou.cash')}${isSettled ? ` • ${props.translate('iou.settledExpensify')}` : ''}`}
                         titleStyle={styles.newKansasLarge}
+                        shouldShowRightIcon
+                        iconRight={Expensicons.ArrowRight}
+                        onPress={() => {console.log('pizza')}}
                     />
                     <MenuItemWithTopDescription
                         description={props.translate('common.description')}
                         title={transactionDescription}
+                        shouldShowRightIcon
+                        iconRight={Expensicons.ArrowRight}
                     />
                     <MenuItemWithTopDescription
                         description={props.translate('common.date')}
                         title={formattedTransactionDate}
+                        shouldShowRightIcon
+                        iconRight={Expensicons.ArrowRight}
                     />
                 </>
             )}
