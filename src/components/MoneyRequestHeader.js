@@ -190,19 +190,21 @@ const MoneyRequestHeader = (props) => {
                         titleStyle={styles.newKansasLarge}
                         shouldShowRightIcon
                         iconRight={Expensicons.ArrowRight}
-                        onPress={() => Navigation.navigate(ROUTES.getEditRequestRoute(123, 'pizza'))}
+                        onPress={() => Navigation.navigate(ROUTES.getEditRequestRoute(props.report.reportID, CONST.EDIT_REQUEST_FIELD.AMOUNT))}
                     />
                     <MenuItemWithTopDescription
                         description={props.translate('common.description')}
                         title={transactionDescription}
                         shouldShowRightIcon
                         iconRight={Expensicons.ArrowRight}
+                        onPress={() => Navigation.navigate(ROUTES.getEditRequestRoute(props.report.reportID, CONST.EDIT_REQUEST_FIELD.DESCRIPTION))}
                     />
                     <MenuItemWithTopDescription
                         description={props.translate('common.date')}
                         title={formattedTransactionDate}
                         shouldShowRightIcon
                         iconRight={Expensicons.ArrowRight}
+                        onPress={() => Navigation.navigate(ROUTES.getEditRequestRoute(props.report.reportID, CONST.EDIT_REQUEST_FIELD.DATE))}
                     />
                 </>
             )}
