@@ -1,16 +1,13 @@
 import React from 'react';
 import {View, InteractionManager} from 'react-native';
 import PropTypes from 'prop-types';
-import {withOnyx} from 'react-native-onyx';
 import lodashGet from 'lodash/get';
 import _ from 'underscore';
-import ONYXKEYS from '../../../ONYXKEYS';
 import styles from '../../../styles/styles';
 import BigNumberPad from '../../../components/BigNumberPad';
 import Navigation from '../../../libs/Navigation/Navigation';
 import ROUTES from '../../../ROUTES';
 import withLocalize, {withLocalizePropTypes} from '../../../components/withLocalize';
-import compose from '../../../libs/compose';
 import Button from '../../../components/Button';
 import CONST from '../../../CONST';
 import * as DeviceCapabilities from '../../../libs/DeviceCapabilities';
@@ -32,19 +29,14 @@ const propTypes = {
     /** Text to display on the button that "saves" the amount */
     buttonText: PropTypes.string.isRequired,
 
-    /* Onyx Props */
-
-    /** Holds data related to IOU view state, rather than the underlying IOU data. */
-    iou: PropTypes.shape({
-        /** Selected Currency Code of the current IOU */
-        selectedCurrencyCode: PropTypes.string,
-    }),
+    /** Selected Currency Code of the current IOU */
+    selectedCurrencyCode: PropTypes.string,
 
     ...withLocalizePropTypes,
 };
 
 const defaultProps = {
-    iou: {},
+    selectedCurrencyCode: CONST.CURRENCY.USD,
 };
 class MoneyRequestAmountPage extends React.Component {
     constructor(props) {
@@ -64,7 +56,7 @@ class MoneyRequestAmountPage extends React.Component {
         const selectedAmountAsString = props.selectedAmount ? props.selectedAmount.toString() : '';
         this.state = {
             amount: selectedAmountAsString,
-            selectedCurrencyCode: _.isUndefined(props.iou.selectedCurrencyCode) ? CONST.CURRENCY.USD : props.iou.selectedCurrencyCode,
+            selectedCurrencyCode: props.selectedCurrencyCode,
             shouldUpdateSelection: true,
             selection: {
                 start: selectedAmountAsString.length,
@@ -84,11 +76,11 @@ class MoneyRequestAmountPage extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.iou.selectedCurrencyCode === this.props.iou.selectedCurrencyCode) {
+        if (prevProps.selectedCurrencyCode === this.props.selectedCurrencyCode) {
             return;
         }
 
-        this.setState({selectedCurrencyCode: this.props.iou.selectedCurrencyCode});
+        this.setState({selectedCurrencyCode: this.props.selectedCurrencyCode});
     }
 
     componentWillUnmount() {
@@ -375,10 +367,4 @@ class MoneyRequestAmountPage extends React.Component {
 
 MoneyRequestAmountPage.propTypes = propTypes;
 MoneyRequestAmountPage.defaultProps = defaultProps;
-
-export default compose(
-    withLocalize,
-    withOnyx({
-        iou: {key: ONYXKEYS.IOU},
-    }),
-)(MoneyRequestAmountPage);
+export default withLocalize(MoneyRequestAmountPage);

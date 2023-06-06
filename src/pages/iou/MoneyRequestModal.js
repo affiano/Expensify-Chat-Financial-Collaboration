@@ -328,6 +328,7 @@ const MoneyRequestModal = (props) => {
                                             reportID={reportID}
                                             hasMultipleParticipants={props.hasMultipleParticipants}
                                             selectedAmount={CurrencyUtils.convertToWholeUnit(props.iou.selectedCurrencyCode, amount)}
+                                            selectedCurrencyCode={lodashGet(props.iou, 'selectedCurrencyCode')}
                                             navigation={props.navigation}
                                             route={props.route}
                                             iouType={props.iouType}

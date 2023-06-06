@@ -12,6 +12,8 @@ import MoneyRequestAmountPage from './iou/steps/MoneyRequestAmountPage';
 import * as CurrencyUtils from '../libs/CurrencyUtils';
 import ONYXKEYS from '../ONYXKEYS';
 import * as IOU from '../libs/actions/IOU';
+import * as ReportActionsUtils from '../libs/ReportActionsUtils';
+import * as ReportUtils from '../libs/ReportUtils';
 
 const propTypes = {
     ...withLocalizePropTypes,
@@ -44,7 +46,13 @@ function getTranslationForField(fieldName) {
 }
 
 function EditRequestPage(props) {
-    const [amount, setAmount] = useState();
+    const parentReportAction = ReportActionsUtils.getParentReportAction(props.report);
+    const moneyRequestAction = ReportUtils.getMoneyRequestAction(parentReportAction);
+    const transactionAmount = moneyRequestAction.amount;
+    const currency = moneyRequestAction.currency;
+    const description = moneyRequestAction.comment;
+
+    const [amount, setAmount] = useState(transactionAmount);
     const threadReportID = lodashGet(props, ['route', 'params', 'threadReportID'], '');
     const field = lodashGet(props, ['route', 'params', 'field'], '');
     return (
@@ -61,13 +69,13 @@ function EditRequestPage(props) {
                         <MoneyRequestAmountPage
                             onStepComplete={(value, selectedCurrencyCode) => {
                                 const amountInSmallestCurrencyUnits = CurrencyUtils.convertToSmallestUnit(selectedCurrencyCode, Number.parseFloat(value));
-                                IOU.setIOUSelectedCurrency(selectedCurrencyCode);
                                 setAmount(amountInSmallestCurrencyUnits);
                                 Navigation.dismissModal();
                             }}
+                            selectedCurrencyCode={currency}
                             reportID={threadReportID}
                             hasMultipleParticipants={false}
-                            selectedAmount={CurrencyUtils.convertToWholeUnit(props.iou.selectedCurrencyCode, amount)}
+                            selectedAmount={CurrencyUtils.convertToWholeUnit(currency, amount)}
                             navigation={props.navigation}
                             route={props.route}
                             iouType={props.iouType}
@@ -85,6 +93,9 @@ EditRequestPage.propTypes = propTypes;
 export default compose(
     withLocalize,
     withOnyx({
+        report: {
+            key: ({route}) => `${ONYXKEYS.COLLECTION.REPORT}${route.params.threadReportID}`,
+        },
         iou: {
             key: ONYXKEYS.IOU,
         },
