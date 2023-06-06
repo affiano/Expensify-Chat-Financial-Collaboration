@@ -32,9 +32,9 @@ Request.use(Middleware.SaveResponseInOnyx);
  * @param {Object} onyxData  - Object containing errors, loading states, and optimistic UI data that will be merged
  *                             into Onyx before and after a request is made. Each nested object will be formatted in
  *                             the same way as an API response.
- * @param {Object} [onyxData.optimisticData] - Onyx instructions that will be passed to Onyx.update() before the request is made.
- * @param {Object} [onyxData.successData] - Onyx instructions that will be passed to Onyx.update() when the response has jsonCode === 200.
- * @param {Object} [onyxData.failureData] - Onyx instructions that will be passed to Onyx.update() when the response has jsonCode !== 200.
+ * @param {Array} [onyxData.optimisticData] - Onyx instructions that will be passed to Onyx.update() before the request is made.
+ * @param {Array} [onyxData.successData] - Onyx instructions that will be passed to Onyx.update() when the response has jsonCode === 200.
+ * @param {Array} [onyxData.failureData] - Onyx instructions that will be passed to Onyx.update() when the response has jsonCode !== 200.
  */
 function write(command, apiCommandParameters = {}, onyxData = {}) {
     // Optimistically update Onyx

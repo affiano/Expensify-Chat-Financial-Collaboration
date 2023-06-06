@@ -1,7 +1,7 @@
 import _ from 'underscore';
 import lodashGet from 'lodash/get';
 import {Keyboard} from 'react-native';
-import {CommonActions, DrawerActions, getPathFromState} from '@react-navigation/native';
+import {CommonActions, DrawerActions, getPathFromState, getStateFromPath} from '@react-navigation/native';
 import Onyx from 'react-native-onyx';
 import Log from '../Log';
 import linkTo from './linkTo';
@@ -319,6 +319,40 @@ function drawerGoBack(backRoute) {
     navigate(backRoute);
 }
 
+function getRoutesFromState(state) {
+    const routes = [];
+    for (let i = 0; i < state.routes.length; i++) {
+        const route = state.routes[i];
+        routes.push(route);
+
+        if (route.state) {
+            routes.push(...getRoutesFromState(route.state));
+        }
+    }
+    return routes;
+}
+
+/**
+ * Given a path this will look to see if the corresponding route exists in the current navigation state of the app.
+ *
+ * @param {string} path
+ * @returns {boolean}
+ */
+function isPathInState(path) {
+    const state = getStateFromPath(path, linkingConfig.config);
+    const routes = getRoutesFromState(state);
+    const foundRoute = _.find(routes, route => route.path === path);
+    if (!foundRoute) {
+        return false;
+    }
+
+    const routeName = foundRoute.name;
+    const currentState = navigationRef.current.getState();
+    const routesInCurrentState = getRoutesFromState(currentState);
+    const currentRouteNames = _.map(routesInCurrentState, route => route.name);
+    return currentRouteNames.includes(routeName);
+}
+
 export default {
     canNavigate,
     navigate,
@@ -341,6 +375,7 @@ export default {
     isReportScreenReady,
     setIsReportScreenIsReady,
     drawerGoBack,
+    isPathInState,
 };
 
 export {navigationRef};

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import lodashGet from 'lodash/get';
 import {withOnyx} from 'react-native-onyx';
@@ -11,9 +11,9 @@ import withLocalize, {withLocalizePropTypes} from '../components/withLocalize';
 import MoneyRequestAmountPage from './iou/steps/MoneyRequestAmountPage';
 import * as CurrencyUtils from '../libs/CurrencyUtils';
 import ONYXKEYS from '../ONYXKEYS';
-import * as IOU from '../libs/actions/IOU';
 import * as ReportActionsUtils from '../libs/ReportActionsUtils';
 import * as ReportUtils from '../libs/ReportUtils';
+import * as Transaction from '../libs/actions/Transaction';
 
 const propTypes = {
     ...withLocalizePropTypes,
@@ -52,7 +52,6 @@ function EditRequestPage(props) {
     const currency = moneyRequestAction.currency;
     const description = moneyRequestAction.comment;
 
-    const [amount, setAmount] = useState(transactionAmount);
     const threadReportID = lodashGet(props, ['route', 'params', 'threadReportID'], '');
     const field = lodashGet(props, ['route', 'params', 'field'], '');
     return (
@@ -68,17 +67,18 @@ function EditRequestPage(props) {
                     {field === CONST.EDIT_REQUEST_FIELD.AMOUNT && (
                         <MoneyRequestAmountPage
                             onStepComplete={(value, selectedCurrencyCode) => {
-                                const amountInSmallestCurrencyUnits = CurrencyUtils.convertToSmallestUnit(selectedCurrencyCode, Number.parseFloat(value));
-                                setAmount(amountInSmallestCurrencyUnits);
+                                Transaction.updateTransaction({currency: selectedCurrencyCode, amount: -(value * 100)});
+
+                                // Note: The "modal" we are dismissing is the MoneyRequestAmountPage
                                 Navigation.dismissModal();
                             }}
                             selectedCurrencyCode={currency}
                             reportID={threadReportID}
                             hasMultipleParticipants={false}
-                            selectedAmount={CurrencyUtils.convertToWholeUnit(currency, amount)}
+                            selectedAmount={CurrencyUtils.convertToWholeUnit(currency, transactionAmount)}
                             navigation={props.navigation}
                             route={props.route}
-                            iouType={props.iouType}
+                            iouType={CONST.IOU.MONEY_REQUEST_TYPE.REQUEST}
                             buttonText={props.translate('common.save')}
                         />
                     )}
