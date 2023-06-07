@@ -215,7 +215,7 @@ function transferWalletBalance(paymentMethod) {
     API.write('TransferWalletBalance', parameters, {
         optimisticData: [
             {
-                onyxMethod: 'merge',
+                onyxMethod: Onyx.METHOD.MERGE,
                 key: ONYXKEYS.WALLET_TRANSFER,
                 value: {
                     loading: true,
@@ -225,7 +225,7 @@ function transferWalletBalance(paymentMethod) {
         ],
         successData: [
             {
-                onyxMethod: 'merge',
+                onyxMethod: Onyx.METHOD.MERGE,
                 key: ONYXKEYS.WALLET_TRANSFER,
                 value: {
                     loading: false,
@@ -236,7 +236,7 @@ function transferWalletBalance(paymentMethod) {
         ],
         failureData: [
             {
-                onyxMethod: 'merge',
+                onyxMethod: Onyx.METHOD.MERGE,
                 key: ONYXKEYS.WALLET_TRANSFER,
                 value: {
                     loading: false,

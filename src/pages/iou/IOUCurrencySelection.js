@@ -136,9 +136,12 @@ class IOUCurrencySelection extends Component {
 
         // When we refresh the web, the money request route gets cleared from the navigation stack.
         // Navigating to "backTo" will result in forward navigation instead, causing disruption to the currency selection.
-        // To prevent any negative experience, we have made the decision to simply close the currency selection page when
-        // the route that we are trying to go "backTo" does not exist in the navigation hierarchy at all.
-        if (_.isEmpty(backTo) || !Navigation.isPathInState(backTo)) {
+        // To prevent any negative experience, we have made the decision to simply close the currency selection page.
+        const routes = this.props.navigation.getState().routes;
+
+        // This hack does not work for the edit case because it will only ever have one route. Some other solution would be required if we
+        // want this edge case to work.
+        if (_.isEmpty(backTo) || (routes.length === 1 && !backTo.includes('edit'))) {
             Navigation.goBack();
         } else {
             Navigation.navigate(`${this.props.route.params.backTo}?currency=${option.currencyCode}`);

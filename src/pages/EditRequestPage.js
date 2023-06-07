@@ -51,7 +51,6 @@ function EditRequestPage(props) {
     const transactionAmount = moneyRequestAction.amount;
     const currency = moneyRequestAction.currency;
     const description = moneyRequestAction.comment;
-
     const threadReportID = lodashGet(props, ['route', 'params', 'threadReportID'], '');
     const field = lodashGet(props, ['route', 'params', 'field'], '');
     return (
