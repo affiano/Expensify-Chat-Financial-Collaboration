@@ -43,19 +43,15 @@ function updateTransaction(changes, transactionID, iouReportID, iouReportActionI
             key: `${ONYXKEYS.COLLECTION.REPORT}${iouReportID}`,
             value: {
                 // todo - somehow calculate the report total :shrug:
-                total: 0
+                total: 0,
             },
         });
     }
 
     const onyxData = {
         optimisticData,
-        successData: [
-
-        ],
-        failureData: [
-
-        ],
+        successData: [],
+        failureData: [],
     };
     API.write('UpdateTransaction', params, onyxData);
 }

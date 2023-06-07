@@ -30,7 +30,7 @@ const propTypes = {
  * @returns {string}
  */
 function getTranslationForField(fieldName) {
-    switch(fieldName) {
+    switch (fieldName) {
         case CONST.EDIT_REQUEST_FIELD.AMOUNT: {
             return 'iou.amount';
         }
@@ -61,12 +61,7 @@ function EditRequestPage(props) {
     const field = lodashGet(props, ['route', 'params', 'field'], '');
 
     function updateTransactionWithChanges(changes) {
-        Transaction.updateTransaction(
-            changes,
-            transactionID,
-            iouReportID,
-            parentReportAction.reportActionID
-        );
+        Transaction.updateTransaction(changes, transactionID, iouReportID, parentReportAction.reportActionID);
 
         // Note: The "modal" we are dismissing is the MoneyRequestAmountPage
         Navigation.dismissModal();
@@ -111,15 +106,11 @@ function EditRequestPage(props) {
                             />
                         </>
                     )}
-                    {field === CONST.EDIT_REQUEST_FIELD.DATE && (
-                        <>
-                            {/* todo */}
-                        </>
-                    )}
+                    {field === CONST.EDIT_REQUEST_FIELD.DATE && <>{/* todo */}</>}
                 </>
             )}
         </ScreenWrapper>
-    )
+    );
 }
 
 EditRequestPage.displayName = 'EditRequestPage';
@@ -133,5 +124,5 @@ export default compose(
         iou: {
             key: ONYXKEYS.IOU,
         },
-    },
-))(EditRequestPage);
+    }),
+)(EditRequestPage);
