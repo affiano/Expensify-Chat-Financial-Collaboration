@@ -48,9 +48,14 @@ function getTranslationForField(fieldName) {
 function EditRequestPage(props) {
     const parentReportAction = ReportActionsUtils.getParentReportAction(props.report);
     const moneyRequestAction = ReportUtils.getMoneyRequestAction(parentReportAction);
+    const transactionID = lodashGet(parentReportAction, 'originalMessage.IOUTransactionID');
+    const iouReportID = lodashGet(parentReportAction, 'originalMessage.IOUReportID');
     const transactionAmount = moneyRequestAction.amount;
     const currency = moneyRequestAction.currency;
     const description = moneyRequestAction.comment;
+
+    // const date = todo get from transaction...
+
     const threadReportID = lodashGet(props, ['route', 'params', 'threadReportID'], '');
     const field = lodashGet(props, ['route', 'params', 'field'], '');
     return (
@@ -66,7 +71,12 @@ function EditRequestPage(props) {
                     {field === CONST.EDIT_REQUEST_FIELD.AMOUNT && (
                         <MoneyRequestAmountPage
                             onStepComplete={(value, selectedCurrencyCode) => {
-                                Transaction.updateTransaction({currency: selectedCurrencyCode, amount: value * 100});
+                                Transaction.updateTransaction(
+                                    {currency: selectedCurrencyCode, amount: value * 100},
+                                    transactionID,
+                                    iouReportID,
+                                    parentReportAction.reportActionID
+                                );
 
                                 // Note: The "modal" we are dismissing is the MoneyRequestAmountPage
                                 Navigation.dismissModal();

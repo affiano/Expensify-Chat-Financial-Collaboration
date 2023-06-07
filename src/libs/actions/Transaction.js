@@ -10,10 +10,18 @@ import ONYXKEYS from '../../ONYXKEYS';
  * @param {string} [changes.modifiedCreated]
  * @param {string} [changes.comment]
  * @param {string} transactionID
- * @param {object} iouReportID
- * @param {string} parentReportActionID
+ * @param {object} iouReportID this is the report of type iou or expense
+ * @param {string} iouReportActionID reportAction action: 'IOU' type: 'create' - the originalMessage stores some details about the transaction
  */
-function updateTransaction(changes, transactionID, iouReportID, parentReportActionID) {
+function updateTransaction(changes, transactionID, iouReportID, iouReportActionID) {
+    // With the exception of modifiedCreated all the params are the ones the API expects
+    const params = _.omit(changes, 'modifiedCreated');
+    params.transactionID = transactionID;
+
+    if (changes.modifiedCreated) {
+        params.created = changes.modifiedCreated;
+    }
+
     const optimisticData = [];
     optimisticData.push({
         onyxMethod: Onyx.METHOD.MERGE,
@@ -24,14 +32,14 @@ function updateTransaction(changes, transactionID, iouReportID, parentReportActi
     // We are not storing the modifiedCreated on the reportAction so remove it if added from the "original message"
     optimisticData.push({
         onyxMethod: Onyx.METHOD.MERGE,
-        key: `${ONYXKEYS.COLLECTION.REPORT_ACTIONS}${parentReportActionID}`,
+        key: `${ONYXKEYS.COLLECTION.REPORT_ACTIONS}${iouReportActionID}`,
         value: {originalMessage: _.omit(changes, 'modifiedCreated')},
     });
 
     // If the amount changed then the total for the iouReport needs to be optimistically re-calculated
     if (_.has(changes, 'amount')) {
         optimisticData.push({
-            onyxMethod: Onyx.METHOD_MERGE,
+            onyxMethod: Onyx.METHOD.MERGE,
             key: `${ONYXKEYS.COLLECTION.REPORT}${iouReportID}`,
             value: {
                 // todo - somehow calculate the report total :shrug:
@@ -40,7 +48,6 @@ function updateTransaction(changes, transactionID, iouReportID, parentReportActi
         });
     }
 
-    const params = {};
     const onyxData = {
         optimisticData,
         successData: [
