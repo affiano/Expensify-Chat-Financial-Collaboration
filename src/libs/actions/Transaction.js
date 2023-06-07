@@ -17,6 +17,7 @@ function updateTransaction(changes, transactionID, iouReportID, iouReportActionI
     // With the exception of modifiedCreated all the params are the ones the API expects
     const params = _.omit(changes, 'modifiedCreated');
     params.transactionID = transactionID;
+    params.reportID = iouReportID;
 
     if (changes.modifiedCreated) {
         params.created = changes.modifiedCreated;
