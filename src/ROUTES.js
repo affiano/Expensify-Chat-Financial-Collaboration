@@ -64,7 +64,7 @@ export default {
     NEW_CHAT: 'new/chat',
     NEW_TASK,
     REPORT,
-    REPORT_WITH_ID: 'r/:reportID',
+    REPORT_WITH_ID: 'r/:reportID?',
     EDIT_REQUEST: 'r/:threadReportID/edit/:field',
     getEditRequestRoute: (threadReportID, field) => `r/${threadReportID}/edit/${field}`,
     getReportRoute: (reportID) => `r/${reportID}`,
