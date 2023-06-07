@@ -81,6 +81,16 @@ function EditRequestPage(props) {
                             buttonText={props.translate('common.save')}
                         />
                     )}
+                    {field === CONST.EDIT_REQUEST_FIELD.DESCRIPTION && (
+                        <>
+                            {/* todo */}
+                        </>
+                    )}
+                    {field === CONST.EDIT_REQUEST_FIELD.DATE && (
+                        <>
+                            {/* todo */}
+                        </>
+                    )}
                 </>
             )}
         </ScreenWrapper>
