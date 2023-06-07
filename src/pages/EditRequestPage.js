@@ -66,7 +66,7 @@ function EditRequestPage(props) {
                     {field === CONST.EDIT_REQUEST_FIELD.AMOUNT && (
                         <MoneyRequestAmountPage
                             onStepComplete={(value, selectedCurrencyCode) => {
-                                Transaction.updateTransaction({currency: selectedCurrencyCode, amount: -(value * 100)});
+                                Transaction.updateTransaction({currency: selectedCurrencyCode, amount: value * 100});
 
                                 // Note: The "modal" we are dismissing is the MoneyRequestAmountPage
                                 Navigation.dismissModal();
