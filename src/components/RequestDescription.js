@@ -21,12 +21,7 @@ function RequestDescription(props) {
             shouldEnableMaxHeight
             onEntryTransitionEnd={() => inputRef.current && inputRef.current.focus()}
         >
-            <HeaderWithBackButton
-                title={props.headerTitle}
-                shouldShowBackButton
-                onBackButtonPress={props.onBackButtonPress}
-                onCloseButtonPress={props.onCloseButtonPress}
-            />
+            <HeaderWithBackButton title={props.headerTitle} />
             <Form
                 style={[styles.flexGrow1, styles.ph5]}
                 formID={props.formID}
