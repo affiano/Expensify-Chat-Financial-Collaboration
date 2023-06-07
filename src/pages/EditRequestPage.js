@@ -16,6 +16,7 @@ import * as ReportUtils from '../libs/ReportUtils';
 import * as Transaction from '../libs/actions/Transaction';
 import RequestDescription from '../components/RequestDescription';
 import RequestCreated from '../components/RequestCreated';
+import DateUtils from '../libs/DateUtils';
 
 const propTypes = {
     ...withLocalizePropTypes,
@@ -108,7 +109,7 @@ function EditRequestPage(props) {
                     )}
                     {field === CONST.EDIT_REQUEST_FIELD.DATE && (
                         <RequestCreated
-                            defaultValue={created}
+                            defaultValue={DateUtils.getDateStringFromISOTimestamp(created)}
                             route={props.route}
                             submit={(modifiedCreated) => {
                                 updateTransactionWithChanges({modifiedCreated});
