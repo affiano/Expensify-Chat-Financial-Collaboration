@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {withOnyx} from 'react-native-onyx';
 import {View} from 'react-native';
 import PropTypes from 'prop-types';
@@ -28,6 +28,7 @@ import MenuItemWithTopDescription from './MenuItemWithTopDescription';
 import DateUtils from '../libs/DateUtils';
 import reportPropTypes from '../pages/reportPropTypes';
 import * as UserUtils from '../libs/UserUtils';
+import * as Report from '../libs/actions/Report';
 
 const propTypes = {
     /** The report currently being looked at */
@@ -90,6 +91,10 @@ const MoneyRequestHeader = (props) => {
     const shouldShowSettlementButton = !isSettled && !props.isSingleTransactionView && isPayer;
     const bankAccountRoute = ReportUtils.getBankAccountRoute(props.chatReport);
     const shouldShowPaypal = Boolean(lodashGet(props.personalDetails, [moneyRequestReport.managerEmail, 'payPalMeAddress']));
+
+    useEffect(() => {
+        Report.openMoneyRequestsReportPage(moneyRequestReport.chatReportID, moneyRequestReport.reportID);
+    }, []);
     return (
         <View style={[{backgroundColor: themeColors.highlightBG}, styles.pl0]}>
             <HeaderWithBackButton

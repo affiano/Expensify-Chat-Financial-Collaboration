@@ -57,8 +57,8 @@ function EditRequestPage(props) {
     const description = moneyRequestAction.comment;
 
     // If we have a modifiedCreated on the transaction then we will use it otherwise we will have just the created
-    console.log(props.transaction);
-
+    const transaction = lodashGet(props.reportTransactions, transactionID, {});
+    const created = transaction.created || transaction.modifiedCreated;
     const threadReportID = lodashGet(props, ['route', 'params', 'threadReportID'], '');
     const field = lodashGet(props, ['route', 'params', 'field'], '');
 
@@ -108,10 +108,10 @@ function EditRequestPage(props) {
                     )}
                     {field === CONST.EDIT_REQUEST_FIELD.DATE && (
                         <RequestCreated
-                            defaultValue=""
+                            defaultValue={created}
                             route={props.route}
-                            submit={(value) => {
-                                console.log(value);
+                            submit={(modifiedCreated) => {
+                                updateTransactionWithChanges({modifiedCreated});
                             }}
                         />
                     )}
@@ -135,12 +135,12 @@ export default compose(
     }),
     // Note: The order of this connection is important because getting the transaction key depends on the report prop
     withOnyx({
-        transaction: {
+        reportTransactions: {
             key: (props) => {
                 const parentReportAction = ReportActionsUtils.getParentReportAction(props.report);
-                const transactionID = lodashGet(parentReportAction, 'originalMessage.IOUTransactionID');
-                return `${ONYXKEYS.COLLECTION.TRANSACTION}${transactionID}`;
-            }
+                const iouReportID = lodashGet(parentReportAction, 'originalMessage.IOUReportID');
+                return `${ONYXKEYS.COLLECTION.TRANSACTION}${iouReportID}`;
+            },
         },
     }),
 )(EditRequestPage);
