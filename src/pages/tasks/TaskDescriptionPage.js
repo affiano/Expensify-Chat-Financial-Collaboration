@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 import {withOnyx} from 'react-native-onyx';
 import withLocalize, {withLocalizePropTypes} from '../../components/withLocalize';
 import ONYXKEYS from '../../ONYXKEYS';
-import Navigation from '../../libs/Navigation/Navigation';
 import compose from '../../libs/compose';
 import reportPropTypes from '../reportPropTypes';
 import * as TaskUtils from '../../libs/actions/Task';
-import ROUTES from '../../ROUTES';
 import RequestDescription from '../../components/RequestDescription';
 
 const propTypes = {
@@ -46,8 +44,6 @@ function TaskDescriptionPage(props) {
     return (
         <RequestDescription
             headerTitle={props.translate('newTaskPage.task')}
-            onBackButtonPress={() => Navigation.goBack(ROUTES.NEW_TASK)}
-            onCloseButtonPress={() => TaskUtils.dismissModalAndClearOutTaskInfo()}
             formID={ONYXKEYS.FORMS.EDIT_TASK_FORM}
             validate={validate}
             submit={submit}
