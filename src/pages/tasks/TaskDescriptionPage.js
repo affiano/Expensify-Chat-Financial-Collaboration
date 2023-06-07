@@ -1,19 +1,14 @@
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback} from 'react';
 import PropTypes from 'prop-types';
-import {View} from 'react-native';
 import {withOnyx} from 'react-native-onyx';
-import ScreenWrapper from '../../components/ScreenWrapper';
-import HeaderWithBackButton from '../../components/HeaderWithBackButton';
 import withLocalize, {withLocalizePropTypes} from '../../components/withLocalize';
-import Form from '../../components/Form';
 import ONYXKEYS from '../../ONYXKEYS';
-import TextInput from '../../components/TextInput';
-import styles from '../../styles/styles';
 import Navigation from '../../libs/Navigation/Navigation';
 import compose from '../../libs/compose';
 import reportPropTypes from '../reportPropTypes';
 import * as TaskUtils from '../../libs/actions/Task';
 import ROUTES from '../../ROUTES';
+import RequestDescription from '../../components/RequestDescription';
 
 const propTypes = {
     /** Current user session */
@@ -48,38 +43,18 @@ function TaskDescriptionPage(props) {
         [props],
     );
 
-    const inputRef = useRef(null);
-
     return (
-        <ScreenWrapper
-            includeSafeAreaPaddingBottom={false}
-            onEntryTransitionEnd={() => inputRef.current && inputRef.current.focus()}
-        >
-            <HeaderWithBackButton
-                title={props.translate('newTaskPage.task')}
-                shouldShowBackButton
-                onBackButtonPress={() => Navigation.goBack(ROUTES.NEW_TASK)}
-                onCloseButtonPress={() => TaskUtils.dismissModalAndClearOutTaskInfo()}
-            />
-            <Form
-                style={[styles.flexGrow1, styles.ph5]}
-                formID={ONYXKEYS.FORMS.EDIT_TASK_FORM}
-                validate={validate}
-                onSubmit={submit}
-                submitButtonText={props.translate('common.save')}
-                enabledWhenOffline
-            >
-                <View style={[styles.mb4]}>
-                    <TextInput
-                        inputID="description"
-                        name="description"
-                        label={props.translate('newTaskPage.descriptionOptional')}
-                        defaultValue={(props.task.report && props.task.report.description) || ''}
-                        ref={(el) => (inputRef.current = el)}
-                    />
-                </View>
-            </Form>
-        </ScreenWrapper>
+        <RequestDescription
+            headerTitle={props.translate('newTaskPage.task')}
+            onBackButtonPress={() => Navigation.goBack(ROUTES.NEW_TASK)}
+            onCloseButtonPress={() => TaskUtils.dismissModalAndClearOutTaskInfo()}
+            formID={ONYXKEYS.FORMS.EDIT_TASK_FORM}
+            validate={validate}
+            submit={submit}
+            textInputID="description"
+            textInputLabel={props.translate('newTaskPage.descriptionOptional')}
+            textInputDefaultValue={(props.task.report && props.task.report.description) || ''}
+        />
     );
 }
 

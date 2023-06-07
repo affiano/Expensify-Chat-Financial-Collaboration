@@ -4,7 +4,7 @@ import lodashGet from 'lodash/get';
 import {withOnyx} from 'react-native-onyx';
 import CONST from '../CONST';
 import ScreenWrapper from '../components/ScreenWrapper';
-import HeaderWithCloseButton from '../components/HeaderWithCloseButton';
+import HeaderWithBackButton from '../components/HeaderWithBackButton';
 import Navigation from '../libs/Navigation/Navigation';
 import compose from '../libs/compose';
 import withLocalize, {withLocalizePropTypes} from '../components/withLocalize';
@@ -14,6 +14,7 @@ import ONYXKEYS from '../ONYXKEYS';
 import * as ReportActionsUtils from '../libs/ReportActionsUtils';
 import * as ReportUtils from '../libs/ReportUtils';
 import * as Transaction from '../libs/actions/Transaction';
+import RequestDescription from '../components/RequestDescription';
 
 const propTypes = {
     ...withLocalizePropTypes,
@@ -58,11 +59,24 @@ function EditRequestPage(props) {
 
     const threadReportID = lodashGet(props, ['route', 'params', 'threadReportID'], '');
     const field = lodashGet(props, ['route', 'params', 'field'], '');
+
+    function updateTransactionWithChanges(changes) {
+        Transaction.updateTransaction(
+            changes,
+            transactionID,
+            iouReportID,
+            parentReportAction.reportActionID
+        );
+
+        // Note: The "modal" we are dismissing is the MoneyRequestAmountPage
+        Navigation.dismissModal();
+    }
+
     return (
         <ScreenWrapper includeSafeAreaPaddingBottom={false}>
             {({safeAreaPaddingBottomStyle}) => (
                 <>
-                    <HeaderWithCloseButton
+                    <HeaderWithBackButton
                         title={props.translate(getTranslationForField(field))}
                         shouldShowBackButton
                         onBackButtonPress={() => Navigation.dismissModal()}
@@ -71,15 +85,7 @@ function EditRequestPage(props) {
                     {field === CONST.EDIT_REQUEST_FIELD.AMOUNT && (
                         <MoneyRequestAmountPage
                             onStepComplete={(value, selectedCurrencyCode) => {
-                                Transaction.updateTransaction(
-                                    {currency: selectedCurrencyCode, amount: value * 100},
-                                    transactionID,
-                                    iouReportID,
-                                    parentReportAction.reportActionID
-                                );
-
-                                // Note: The "modal" we are dismissing is the MoneyRequestAmountPage
-                                Navigation.dismissModal();
+                                updateTransactionWithChanges({currency: selectedCurrencyCode, amount: value * 100});
                             }}
                             selectedCurrencyCode={currency}
                             reportID={threadReportID}
@@ -93,7 +99,16 @@ function EditRequestPage(props) {
                     )}
                     {field === CONST.EDIT_REQUEST_FIELD.DESCRIPTION && (
                         <>
-                            {/* todo */}
+                            <RequestDescription
+                                onBackButtonPress={() => Navigation.goBack()}
+                                validate={() => ({})}
+                                submit={({moneyRequestComment}) => updateTransactionWithChanges({comment: moneyRequestComment})}
+                                headerTitle={props.translate('common.description')}
+                                formID={ONYXKEYS.FORMS.MONEY_REQUEST_DESCRIPTION_FORM}
+                                textInputID="moneyRequestComment"
+                                textInputLabel={props.translate('moneyRequestConfirmationList.whatsItFor')}
+                                textInputDefaultValue={description}
+                            />
                         </>
                     )}
                     {field === CONST.EDIT_REQUEST_FIELD.DATE && (
