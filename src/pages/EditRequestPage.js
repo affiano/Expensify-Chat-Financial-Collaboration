@@ -17,14 +17,29 @@ import * as Transaction from '../libs/actions/Transaction';
 import RequestDescription from '../components/RequestDescription';
 import RequestCreated from '../components/RequestCreated';
 import DateUtils from '../libs/DateUtils';
+import reportPropTypes from './reportPropTypes';
+import transactionPropType from './transactionPropType';
 
 const propTypes = {
     ...withLocalizePropTypes,
+
+    /** Route from navigation */
     route: PropTypes.shape({
+        /** Params from the route */
         params: PropTypes.shape({
+            /** Which field we are editing */
             field: PropTypes.string,
+
+            /** This is going to be the reportID for the "transaction thread" */
+            threadReportID: PropTypes.string,
         }),
     }).isRequired,
+
+    /** The report object for the thread report */
+    report: reportPropTypes.isRequired,
+
+    /** Map of transactions keyed by the transactionID for a provided report. The report we pull these transactions from is the IOU or "money request" report */
+    reportTransactions: PropTypes.objectOf(transactionPropType).isRequired,
 };
 
 /**
@@ -72,51 +87,47 @@ function EditRequestPage(props) {
 
     return (
         <ScreenWrapper includeSafeAreaPaddingBottom={false}>
-            {({safeAreaPaddingBottomStyle}) => (
-                <>
-                    <HeaderWithBackButton
-                        title={props.translate(getTranslationForField(field))}
-                        shouldShowBackButton
-                        onBackButtonPress={() => Navigation.dismissModal()}
-                        onCloseButtonPress={() => Navigation.dismissModal()}
-                    />
-                    {field === CONST.EDIT_REQUEST_FIELD.AMOUNT && (
-                        <MoneyRequestAmountPage
-                            onStepComplete={(value, selectedCurrencyCode) => {
-                                updateTransactionWithChanges({currency: selectedCurrencyCode, amount: value * 100});
-                            }}
-                            selectedCurrencyCode={currency}
-                            reportID={threadReportID}
-                            hasMultipleParticipants={false}
-                            selectedAmount={CurrencyUtils.convertToWholeUnit(currency, transactionAmount)}
-                            navigation={props.navigation}
-                            route={props.route}
-                            iouType={CONST.IOU.MONEY_REQUEST_TYPE.REQUEST}
-                            buttonText={props.translate('common.save')}
-                        />
-                    )}
-                    {field === CONST.EDIT_REQUEST_FIELD.DESCRIPTION && (
-                        <RequestDescription
-                            onBackButtonPress={() => Navigation.goBack()}
-                            validate={() => ({})}
-                            submit={({moneyRequestComment}) => updateTransactionWithChanges({comment: moneyRequestComment})}
-                            headerTitle={props.translate('common.description')}
-                            formID={ONYXKEYS.FORMS.MONEY_REQUEST_DESCRIPTION_FORM}
-                            textInputID="moneyRequestComment"
-                            textInputLabel={props.translate('moneyRequestConfirmationList.whatsItFor')}
-                            textInputDefaultValue={description}
-                        />
-                    )}
-                    {field === CONST.EDIT_REQUEST_FIELD.DATE && (
-                        <RequestCreated
-                            defaultValue={DateUtils.getDateStringFromISOTimestamp(created)}
-                            route={props.route}
-                            submit={(modifiedCreated) => {
-                                updateTransactionWithChanges({modifiedCreated});
-                            }}
-                        />
-                    )}
-                </>
+            <HeaderWithBackButton
+                title={props.translate(getTranslationForField(field))}
+                shouldShowBackButton
+                onBackButtonPress={() => Navigation.dismissModal()}
+                onCloseButtonPress={() => Navigation.dismissModal()}
+            />
+            {field === CONST.EDIT_REQUEST_FIELD.AMOUNT && (
+                <MoneyRequestAmountPage
+                    onStepComplete={(value, selectedCurrencyCode) => {
+                        updateTransactionWithChanges({currency: selectedCurrencyCode, amount: value * 100});
+                    }}
+                    selectedCurrencyCode={currency}
+                    reportID={threadReportID}
+                    hasMultipleParticipants={false}
+                    selectedAmount={CurrencyUtils.convertToWholeUnit(currency, transactionAmount)}
+                    navigation={props.navigation}
+                    route={props.route}
+                    iouType={CONST.IOU.MONEY_REQUEST_TYPE.REQUEST}
+                    buttonText={props.translate('common.save')}
+                />
+            )}
+            {field === CONST.EDIT_REQUEST_FIELD.DESCRIPTION && (
+                <RequestDescription
+                    onBackButtonPress={() => Navigation.goBack()}
+                    validate={() => ({})}
+                    submit={({moneyRequestComment}) => updateTransactionWithChanges({comment: moneyRequestComment})}
+                    headerTitle={props.translate('common.description')}
+                    formID={ONYXKEYS.FORMS.MONEY_REQUEST_DESCRIPTION_FORM}
+                    textInputID="moneyRequestComment"
+                    textInputLabel={props.translate('moneyRequestConfirmationList.whatsItFor')}
+                    textInputDefaultValue={description}
+                />
+            )}
+            {field === CONST.EDIT_REQUEST_FIELD.DATE && (
+                <RequestCreated
+                    defaultValue={DateUtils.getDateStringFromISOTimestamp(created)}
+                    route={props.route}
+                    submit={(modifiedCreated) => {
+                        updateTransactionWithChanges({modifiedCreated});
+                    }}
+                />
             )}
         </ScreenWrapper>
     );
@@ -129,9 +140,6 @@ export default compose(
     withOnyx({
         report: {
             key: ({route}) => `${ONYXKEYS.COLLECTION.REPORT}${route.params.threadReportID}`,
-        },
-        iou: {
-            key: ONYXKEYS.IOU,
         },
     }),
     // Note: The order of this connection is important because getting the transaction key depends on the report prop
