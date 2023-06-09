@@ -97,7 +97,7 @@ function EditRequestPage(props) {
     }
 
     return (
-        <ScreenWrapper includeSafeAreaPaddingBottom={false}>
+        <ScreenWrapper includeSafeAreaPaddingBottom={field === CONST.EDIT_REQUEST_FIELD.AMOUNT}>
             <HeaderWithBackButton
                 title={props.translate(getTranslationForField(field))}
                 shouldShowBackButton
