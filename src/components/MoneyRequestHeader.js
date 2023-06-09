@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {withOnyx} from 'react-native-onyx';
 import {View} from 'react-native';
 import PropTypes from 'prop-types';
@@ -28,7 +28,6 @@ import MenuItemWithTopDescription from './MenuItemWithTopDescription';
 import DateUtils from '../libs/DateUtils';
 import reportPropTypes from '../pages/reportPropTypes';
 import * as UserUtils from '../libs/UserUtils';
-import * as Report from '../libs/actions/Report';
 
 const propTypes = {
     /** The report currently being looked at */
