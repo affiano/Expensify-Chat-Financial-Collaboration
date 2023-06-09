@@ -31,7 +31,7 @@ function RequestCreated(props) {
             />
         </Form>
     );
-};
+}
 
 RequestCreated.propTypes = propTypes;
 RequestCreated.displayName = 'RequestCreated';
