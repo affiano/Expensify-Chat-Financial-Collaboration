@@ -102,7 +102,6 @@ function EditRequestPage(props) {
                 title={props.translate(getTranslationForField(field))}
                 shouldShowBackButton
                 onBackButtonPress={() => Navigation.dismissModal()}
-                onCloseButtonPress={() => Navigation.dismissModal()}
             />
             {field === CONST.EDIT_REQUEST_FIELD.AMOUNT && (
                 <MoneyRequestAmountPage

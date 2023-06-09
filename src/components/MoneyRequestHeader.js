@@ -188,22 +188,19 @@ const MoneyRequestHeader = (props) => {
                         description={`${props.translate('iou.amount')} • ${props.translate('iou.cash')}${isSettled ? ` • ${props.translate('iou.settledExpensify')}` : ''}`}
                         titleStyle={styles.newKansasLarge}
                         // Note: These options are temporarily disabled while we figure out the required API changes
-                        // shouldShowRightIcon
-                        // iconRight={Expensicons.ArrowRight}
+                        // shouldShowRightIcon={!isSettled}
                         // onPress={() => Navigation.navigate(ROUTES.getEditRequestRoute(props.report.reportID, CONST.EDIT_REQUEST_FIELD.AMOUNT))}
                     />
                     <MenuItemWithTopDescription
                         description={props.translate('common.description')}
                         title={transactionDescription}
-                        // shouldShowRightIcon
-                        // iconRight={Expensicons.ArrowRight}
+                        // shouldShowRightIcon={!isSettled}
                         // onPress={() => Navigation.navigate(ROUTES.getEditRequestRoute(props.report.reportID, CONST.EDIT_REQUEST_FIELD.DESCRIPTION))}
                     />
                     <MenuItemWithTopDescription
                         description={props.translate('common.date')}
                         title={formattedTransactionDate}
-                        // shouldShowRightIcon
-                        // iconRight={Expensicons.ArrowRight}
+                        // shouldShowRightIcon={!isSettled}
                         // onPress={() => Navigation.navigate(ROUTES.getEditRequestRoute(props.report.reportID, CONST.EDIT_REQUEST_FIELD.DATE))}
                     />
                 </>
