@@ -737,6 +737,13 @@ const EditRequestStackNavigator = createModalStackNavigator([
         },
         name: 'EditRequest_Root',
     },
+    {
+        getComponent: () => {
+            const YearPickerPage = require('../../../pages/YearPickerPage').default;
+            return YearPickerPage;
+        },
+        name: 'EditRequest_YearPicker',
+    },
 ]);
 
 export {

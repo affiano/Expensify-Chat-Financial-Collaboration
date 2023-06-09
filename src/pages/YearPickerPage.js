@@ -68,10 +68,18 @@ class YearPickerPage extends React.Component {
         const routes = lodashGet(this.props.navigation.getState(), 'routes', []);
         const dateOfBirthRoute = _.find(routes, (route) => route.name === 'Settings_PersonalDetails_DateOfBirth');
 
-        if (dateOfBirthRoute) {
-            Navigation.setParams({year: selectedYear.toString()}, lodashGet(dateOfBirthRoute, 'key', ''));
+        const activeRoute = Navigation.getActiveRoute();
+        if (activeRoute.includes('/edit/date')) {
+            const editRequestRoute = _.find(routes, (route) => route.name === 'EditRequest_Root');
+            Navigation.setParams({year: selectedYear.toString()}, lodashGet(editRequestRoute, 'key', ''));
             Navigation.goBack();
         } else {
+            if (dateOfBirthRoute) {
+                Navigation.setParams({year: selectedYear.toString()}, lodashGet(dateOfBirthRoute, 'key', ''));
+                Navigation.goBack();
+                return;
+            }
+
             Navigation.goBack(`${ROUTES.SETTINGS_PERSONAL_DETAILS_DATE_OF_BIRTH}?year=${selectedYear}`);
         }
     }

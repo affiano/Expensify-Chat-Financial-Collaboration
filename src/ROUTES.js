@@ -67,6 +67,7 @@ export default {
     REPORT_WITH_ID: 'r/:reportID?',
     EDIT_REQUEST: 'r/:threadReportID/edit/:field',
     getEditRequestRoute: (threadReportID, field) => `r/${threadReportID}/edit/${field}`,
+    EDIT_REQUEST_SELECT_YEAR: 'r/:threadReportID/edit/date/select-year',
     getReportRoute: (reportID) => `r/${reportID}`,
     REPORT_WITH_ID_DETAILS_SHARE_CODE: 'r/:reportID/details/shareCode',
     getReportShareCodeRoute: (reportID) => `r/${reportID}/details/shareCode`,
