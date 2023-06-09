@@ -12,13 +12,11 @@ import MoneyRequestAmountPage from './iou/steps/MoneyRequestAmountPage';
 import * as CurrencyUtils from '../libs/CurrencyUtils';
 import ONYXKEYS from '../ONYXKEYS';
 import * as ReportActionsUtils from '../libs/ReportActionsUtils';
-import * as ReportUtils from '../libs/ReportUtils';
-import * as Transaction from '../libs/actions/Transaction';
 import RequestDescription from '../components/RequestDescription';
 import RequestCreated from '../components/RequestCreated';
 import DateUtils from '../libs/DateUtils';
 import reportPropTypes from './reportPropTypes';
-import transactionPropType from './transactionPropType';
+import * as ReportUtils from '../libs/ReportUtils';
 
 const propTypes = {
     ...withLocalizePropTypes,
@@ -36,10 +34,11 @@ const propTypes = {
     }).isRequired,
 
     /** The report object for the thread report */
-    report: reportPropTypes.isRequired,
+    report: reportPropTypes,
+};
 
-    /** Map of transactions keyed by the transactionID for a provided report. The report we pull these transactions from is the IOU or "money request" report */
-    reportTransactions: PropTypes.objectOf(transactionPropType).isRequired,
+const defaultProps = {
+    report: {},
 };
 
 /**
@@ -65,24 +64,36 @@ function getTranslationForField(fieldName) {
 
 function EditRequestPage(props) {
     const parentReportAction = ReportActionsUtils.getParentReportAction(props.report);
-    const moneyRequestAction = ReportUtils.getMoneyRequestAction(parentReportAction);
-    const transactionID = lodashGet(parentReportAction, 'originalMessage.IOUTransactionID');
-    const iouReportID = lodashGet(parentReportAction, 'originalMessage.IOUReportID');
-    const transactionAmount = moneyRequestAction.amount;
-    const currency = moneyRequestAction.currency;
-    const description = moneyRequestAction.comment;
-
-    // If we have a modifiedCreated on the transaction then we will use it otherwise we will have just the created
-    const transaction = lodashGet(props.reportTransactions, transactionID, {});
-    const created = transaction.created || transaction.modifiedCreated;
+    const moneyRequestReportAction = ReportUtils.getMoneyRequestAction(parentReportAction);
+    const transactionAmount = moneyRequestReportAction.amount;
+    const transactionCurrency = moneyRequestReportAction.currency;
+    const transactionDescription = moneyRequestReportAction.comment;
+    const created = parentReportAction.created;
     const threadReportID = lodashGet(props, ['route', 'params', 'threadReportID'], '');
     const field = lodashGet(props, ['route', 'params', 'field'], '');
 
     function updateTransactionWithChanges(changes) {
-        Transaction.updateTransaction(changes, transactionID, iouReportID, parentReportAction.reportActionID);
+        // Update the transaction...
+        // eslint-disable-next-line no-console
+        console.log({changes});
 
         // Note: The "modal" we are dismissing is the MoneyRequestAmountPage
         Navigation.dismissModal();
+    }
+
+    if (field === CONST.EDIT_REQUEST_FIELD.DESCRIPTION) {
+        return (
+            <RequestDescription
+                onBackButtonPress={() => Navigation.goBack()}
+                validate={() => ({})}
+                submit={({comment}) => updateTransactionWithChanges({comment})}
+                headerTitle={props.translate('common.description')}
+                formID={ONYXKEYS.FORMS.MONEY_REQUEST_DESCRIPTION_FORM}
+                textInputID="comment"
+                textInputLabel={props.translate('moneyRequestConfirmationList.whatsItFor')}
+                textInputDefaultValue={transactionDescription}
+            />
+        );
     }
 
     return (
@@ -96,28 +107,16 @@ function EditRequestPage(props) {
             {field === CONST.EDIT_REQUEST_FIELD.AMOUNT && (
                 <MoneyRequestAmountPage
                     onStepComplete={(value, selectedCurrencyCode) => {
-                        updateTransactionWithChanges({currency: selectedCurrencyCode, amount: value * 100});
+                        updateTransactionWithChanges({modifiedCurrency: selectedCurrencyCode, modifiedAmount: value * 100});
                     }}
-                    selectedCurrencyCode={currency}
+                    selectedCurrencyCode={transactionCurrency}
                     reportID={threadReportID}
                     hasMultipleParticipants={false}
-                    selectedAmount={CurrencyUtils.convertToWholeUnit(currency, transactionAmount)}
+                    selectedAmount={CurrencyUtils.convertToWholeUnit(transactionCurrency, transactionAmount)}
                     navigation={props.navigation}
                     route={props.route}
                     iouType={CONST.IOU.MONEY_REQUEST_TYPE.REQUEST}
                     buttonText={props.translate('common.save')}
-                />
-            )}
-            {field === CONST.EDIT_REQUEST_FIELD.DESCRIPTION && (
-                <RequestDescription
-                    onBackButtonPress={() => Navigation.goBack()}
-                    validate={() => ({})}
-                    submit={({moneyRequestComment}) => updateTransactionWithChanges({comment: moneyRequestComment})}
-                    headerTitle={props.translate('common.description')}
-                    formID={ONYXKEYS.FORMS.MONEY_REQUEST_DESCRIPTION_FORM}
-                    textInputID="moneyRequestComment"
-                    textInputLabel={props.translate('moneyRequestConfirmationList.whatsItFor')}
-                    textInputDefaultValue={description}
                 />
             )}
             {field === CONST.EDIT_REQUEST_FIELD.DATE && (
@@ -135,21 +134,12 @@ function EditRequestPage(props) {
 
 EditRequestPage.displayName = 'EditRequestPage';
 EditRequestPage.propTypes = propTypes;
+EditRequestPage.defaultProps = defaultProps;
 export default compose(
     withLocalize,
     withOnyx({
         report: {
             key: ({route}) => `${ONYXKEYS.COLLECTION.REPORT}${route.params.threadReportID}`,
-        },
-    }),
-    // Note: The order of this connection is important because getting the transaction key depends on the report prop
-    withOnyx({
-        reportTransactions: {
-            key: (props) => {
-                const parentReportAction = ReportActionsUtils.getParentReportAction(props.report);
-                const iouReportID = lodashGet(parentReportAction, 'originalMessage.IOUReportID');
-                return `${ONYXKEYS.COLLECTION.TRANSACTION}${iouReportID}`;
-            },
         },
     }),
 )(EditRequestPage);

@@ -91,10 +91,6 @@ const MoneyRequestHeader = (props) => {
     const shouldShowSettlementButton = !isSettled && !props.isSingleTransactionView && isPayer;
     const bankAccountRoute = ReportUtils.getBankAccountRoute(props.chatReport);
     const shouldShowPaypal = Boolean(lodashGet(props.personalDetails, [moneyRequestReport.managerEmail, 'payPalMeAddress']));
-
-    useEffect(() => {
-        Report.openMoneyRequestsReportPage(moneyRequestReport.chatReportID, moneyRequestReport.reportID);
-    }, []);
     return (
         <View style={[{backgroundColor: themeColors.highlightBG}, styles.pl0]}>
             <HeaderWithBackButton
@@ -192,23 +188,24 @@ const MoneyRequestHeader = (props) => {
                         titleIcon={Expensicons.Checkmark}
                         description={`${props.translate('iou.amount')} • ${props.translate('iou.cash')}${isSettled ? ` • ${props.translate('iou.settledExpensify')}` : ''}`}
                         titleStyle={styles.newKansasLarge}
-                        shouldShowRightIcon
-                        iconRight={Expensicons.ArrowRight}
-                        onPress={() => Navigation.navigate(ROUTES.getEditRequestRoute(props.report.reportID, CONST.EDIT_REQUEST_FIELD.AMOUNT))}
+                        // Note: These options are temporarily disabled while we figure out the required API changes
+                        // shouldShowRightIcon
+                        // iconRight={Expensicons.ArrowRight}
+                        // onPress={() => Navigation.navigate(ROUTES.getEditRequestRoute(props.report.reportID, CONST.EDIT_REQUEST_FIELD.AMOUNT))}
                     />
                     <MenuItemWithTopDescription
                         description={props.translate('common.description')}
                         title={transactionDescription}
-                        shouldShowRightIcon
-                        iconRight={Expensicons.ArrowRight}
-                        onPress={() => Navigation.navigate(ROUTES.getEditRequestRoute(props.report.reportID, CONST.EDIT_REQUEST_FIELD.DESCRIPTION))}
+                        // shouldShowRightIcon
+                        // iconRight={Expensicons.ArrowRight}
+                        // onPress={() => Navigation.navigate(ROUTES.getEditRequestRoute(props.report.reportID, CONST.EDIT_REQUEST_FIELD.DESCRIPTION))}
                     />
                     <MenuItemWithTopDescription
                         description={props.translate('common.date')}
                         title={formattedTransactionDate}
-                        shouldShowRightIcon
-                        iconRight={Expensicons.ArrowRight}
-                        onPress={() => Navigation.navigate(ROUTES.getEditRequestRoute(props.report.reportID, CONST.EDIT_REQUEST_FIELD.DATE))}
+                        // shouldShowRightIcon
+                        // iconRight={Expensicons.ArrowRight}
+                        // onPress={() => Navigation.navigate(ROUTES.getEditRequestRoute(props.report.reportID, CONST.EDIT_REQUEST_FIELD.DATE))}
                     />
                 </>
             )}
