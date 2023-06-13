@@ -48,7 +48,6 @@ function MoneyRequestDescriptionPage(props) {
         <RequestDescription
             onBackButtonPress={onBackButtonPress}
             submit={updateComment}
-            validate={() => ({})}
             headerTitle={props.translate('common.description')}
             formID={ONYXKEYS.FORMS.MONEY_REQUEST_DESCRIPTION_FORM}
             textInputID="moneyRequestComment"
