@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import Form from './Form';
 import ScreenWrapper from './ScreenWrapper';
@@ -14,6 +14,17 @@ const propTypes = {
 
 function RequestDescription(props) {
     const inputRef = useRef(null);
+
+    // Same as NewtaskDescriptionPage, use the selection to place the cursor correctly if there is prior text
+    const [selection, setSelection] = useState({start: 0, end: 0});
+
+    // eslint-disable-next-line rulesdir/prefer-early-return
+    useEffect(() => {
+        if (props.task.report && props.task.report.description) {
+            const length = props.task.report.description.length;
+            setSelection({start: length, end: length});
+        }
+    }, [props.task.report]);
 
     return (
         <ScreenWrapper
@@ -37,6 +48,13 @@ function RequestDescription(props) {
                         label={props.textInputLabel}
                         defaultValue={props.textInputDefaultValue}
                         ref={(el) => (inputRef.current = el)}
+                        autoGrowHeight
+                        containerStyles={[styles.autoGrowHeightMultilineInput]}
+                        textAlignVertical="top"
+                        selection={selection}
+                        onSelectionChange={(e) => {
+                            setSelection(e.nativeEvent.selection);
+                        }}
                     />
                 </View>
             </Form>
