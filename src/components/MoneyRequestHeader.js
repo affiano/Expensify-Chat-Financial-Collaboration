@@ -87,9 +87,16 @@ function MoneyRequestHeader(props) {
     const policy = props.policies[`${ONYXKEYS.COLLECTION.POLICY}${props.report.policyID}`];
     const isPayer =
         Policy.isAdminOfFreePolicy([policy]) || (ReportUtils.isMoneyRequestReport(moneyRequestReport) && lodashGet(props.session, 'accountID', null) === moneyRequestReport.managerID);
-    const shouldShowSettlementButton = !isSettled && !props.isSingleTransactionView && isPayer;
+    const shouldShowSettlementButton = !isSettled && !props.isSingleTransactionView && isPayer && !props.report.isWaitingOnBankAccount;
     const bankAccountRoute = ReportUtils.getBankAccountRoute(props.chatReport);
     const shouldShowPaypal = Boolean(lodashGet(props.personalDetails, [moneyRequestReport.managerID, 'payPalMeAddress']));
+    let description = `${props.translate('iou.amount')} • ${props.translate('iou.cash')}`;
+    if (isSettled) {
+        description += ` • ${props.translate('iou.settledExpensify')}`;
+    } else if (props.report.isWaitingOnBankAccount) {
+        description += ` • Waiting for credit account`;
+    }
+
     return (
         <View style={[{backgroundColor: themeColors.highlightBG}, styles.pl0]}>
             <HeaderWithBackButton
@@ -148,6 +155,14 @@ function MoneyRequestHeader(props) {
                                 />
                             </View>
                         )}
+                        {!props.isSingleTransactionView && !isSettled && props.report.isWaitingOnBankAccount && (
+                            <View style={styles.moneyRequestHeaderCheckmark}>
+                                <Icon
+                                    src={Expensicons.Hourglass}
+                                    fill={themeColors.iconSuccessFill}
+                                />
+                            </View>
+                        )}
                         {shouldShowSettlementButton && !props.isSmallScreenWidth && (
                             <View style={[styles.ml4]}>
                                 <SettlementButton
@@ -183,9 +198,9 @@ function MoneyRequestHeader(props) {
                 <>
                     <MenuItemWithTopDescription
                         title={formattedTransactionAmount}
-                        shouldShowTitleIcon={isSettled}
-                        titleIcon={Expensicons.Checkmark}
-                        description={`${props.translate('iou.amount')} • ${props.translate('iou.cash')}${isSettled ? ` • ${props.translate('iou.settledExpensify')}` : ''}`}
+                        shouldShowTitleIcon={isSettled || props.report.isWaitingOnBankAccount}
+                        titleIcon={isSettled ? Expensicons.Checkmark : Expensicons.Hourglass}
+                        description={description}
                         titleStyle={styles.newKansasLarge}
                     />
                     <MenuItemWithTopDescription

@@ -100,6 +100,7 @@ function ReportPreview(props) {
     const managerName = ReportUtils.isPolicyExpenseChat(props.chatReport) ? ReportUtils.getPolicyName(props.chatReport) : ReportUtils.getDisplayNameForParticipant(managerEmail, true);
     const isCurrentUserManager = managerEmail === lodashGet(props.session, 'email', null);
     const bankAccountRoute = ReportUtils.getBankAccountRoute(props.chatReport);
+
     return (
         <View style={[styles.chatItemMessage]}>
             {_.map(props.action.message, (message, index) => (
@@ -142,7 +143,7 @@ function ReportPreview(props) {
                     />
                 </Pressable>
             ))}
-            {isCurrentUserManager && !ReportUtils.isSettled(props.iouReport.reportID) && (
+            {isCurrentUserManager && !ReportUtils.isSettled(props.iouReport.reportID) && !props.chatReport.isWaitingOnBankAccount && (
                 <SettlementButton
                     currency={props.iouReport.currency}
                     policyID={props.iouReport.policyID}
