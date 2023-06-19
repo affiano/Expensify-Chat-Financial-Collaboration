@@ -26,12 +26,13 @@ function RequestDescription(props) {
     // Use the selection to place the cursor correctly if there is prior text
     const [selection, setSelection] = useState({start: 0, end: 0});
 
-    // eslint-disable-next-line rulesdir/prefer-early-return
     useEffect(() => {
-        if (props.textInputDefaultValue) {
-            const length = props.textInputDefaultValue.length;
-            setSelection({start: length, end: length});
+        if (!props.textInputDefaultValue) {
+            return;
         }
+
+        const length = props.textInputDefaultValue.length;
+        setSelection({start: length, end: length});
     }, [props.textInputDefaultValue]);
 
     return (
