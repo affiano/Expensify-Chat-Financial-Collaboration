@@ -345,7 +345,6 @@ export default {
                     EditRequest: {
                         screens: {
                             EditRequest_Root: ROUTES.EDIT_REQUEST,
-                            EditRequest_YearPicker: ROUTES.EDIT_REQUEST_SELECT_YEAR,
                         },
                     },
                 },

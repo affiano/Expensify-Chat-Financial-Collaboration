@@ -13,8 +13,6 @@ import * as CurrencyUtils from '../libs/CurrencyUtils';
 import ONYXKEYS from '../ONYXKEYS';
 import * as ReportActionsUtils from '../libs/ReportActionsUtils';
 import RequestDescription from '../components/RequestDescription';
-import RequestCreated from '../components/RequestCreated';
-import DateUtils from '../libs/DateUtils';
 import reportPropTypes from './reportPropTypes';
 import * as ReportUtils from '../libs/ReportUtils';
 
@@ -68,7 +66,6 @@ function EditRequestPage(props) {
     const transactionAmount = moneyRequestReportAction.amount;
     const transactionCurrency = moneyRequestReportAction.currency;
     const transactionDescription = moneyRequestReportAction.comment;
-    const created = parentReportAction.created;
     const threadReportID = lodashGet(props, ['route', 'params', 'threadReportID'], '');
     const field = lodashGet(props, ['route', 'params', 'field'], '');
 
@@ -116,15 +113,6 @@ function EditRequestPage(props) {
                     route={props.route}
                     iouType={CONST.IOU.MONEY_REQUEST_TYPE.REQUEST}
                     buttonText={props.translate('common.save')}
-                />
-            )}
-            {field === CONST.EDIT_REQUEST_FIELD.DATE && (
-                <RequestCreated
-                    defaultValue={DateUtils.getDateStringFromISOTimestamp(created)}
-                    route={props.route}
-                    submit={(modifiedCreated) => {
-                        updateTransactionWithChanges({modifiedCreated});
-                    }}
                 />
             )}
         </ScreenWrapper>
